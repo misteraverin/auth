@@ -41,3 +41,4 @@ curl -X POST \
 - хранение в PostgreSQL
 - мониторинг: Grafana, Prometheus
 - (из Basic версии) Docker, Docker-Compose
+ 
