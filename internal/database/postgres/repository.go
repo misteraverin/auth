@@ -42,7 +42,7 @@ func InitializeDBTable(db *sql.DB) error {
         CREATE TABLE IF NOT EXISTS Users (
 			Id SERIAL PRIMARY KEY,
 			Username VARCHAR(50) UNIQUE,
-			Password VARCHAR(50)
+			HashPassword VARCHAR(250)
 		);
 		
 		CREATE TABLE IF NOT EXISTS Tokens (
@@ -55,12 +55,16 @@ func InitializeDBTable(db *sql.DB) error {
 		return err
 	}
 
-	_, err = db.Exec(`		       
-		INSERT INTO Users (Id, Username, Password) VALUES
-			('1', 'user1', 'password1'),
-			('2', 'user2', 'password2'),
-			('3', 'user3', 'password3')
-    `)
+	//password1, err := bcrypt.GenerateFromPassword([]byte("password1"+salt), bcrypt.DefaultCost)
+	//хэш от "password1"+salt
+	//хэш от "password2"+salt
+	//хэш от "password3"+salt
+	_, err = db.Exec(`
+		INSERT INTO Users (Id, Username, HashPassword) VALUES
+			('1', 'user1', '$2a$10$JmYRexxhbYvJBR1rfS9VA.4AeBbl7r82r3ZQ9duFMlZrwJSHzRmQW'),			
+			('2', 'user2', '$2a$10$Nu4Fa6IIROeXNGQ6iHunqOP71ojTCZWeXz9t4VaQ.ehAL6tRU5YFK'),
+			('3', 'user3', '$2a$10$diGAXGuA7k7v8tcUSbJUdec0QVUS2N9hUM1KaD.j4z670Yv8VrVl6')
+	`)
 	return nil
 }
 
@@ -84,23 +88,9 @@ type PostgreSQLRepository struct {
 	db *sql.DB
 }
 
-func (r *PostgreSQLRepository) SaveUser(user *models.User) error {
-	_, err := r.db.Exec("INSERT INTO users (username, password) VALUES ($1, $2)", user.Username, user.Password)
-	return err
-}
-
-func (r *PostgreSQLRepository) GetUserByID(id int) (*models.User, error) {
-	var user models.User
-	err := r.db.QueryRow("SELECT id, username, password FROM users WHERE id = $1", id).Scan(&user.ID, &user.Username, &user.Password)
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
-
 func (r *PostgreSQLRepository) GetUserByUserName(username string) (*models.User, error) {
 	var user models.User
-	err := r.db.QueryRow("SELECT id, username, password FROM users WHERE username = $1", username).Scan(&user.ID, &user.Username, &user.Password)
+	err := r.db.QueryRow("SELECT id, username, HashPassword FROM users WHERE username = $1", username).Scan(&user.ID, &user.Username, &user.HashPassword)
 	if err != nil {
 		return nil, err
 	}
@@ -140,8 +130,8 @@ func (r *PostgreSQLRepository) CheckUserHasToken(username string) (bool, error) 
 
 // Store представляет интерфейс для хранилища пользователей и JWT токенов
 type Repository interface {
-	SaveUser(user *models.User) error
-	GetUserByID(id int) (*models.User, error)
+	//SaveUser(user *models.User) error
+	//GetUserByID(id int) (*models.User, error)
 	GetUserByUserName(username string) (*models.User, error)
 
 	SaveToken(token, username string) error
@@ -149,3 +139,17 @@ type Repository interface {
 	UpdateToken(token, username string) error
 	CheckUserHasToken(username string) (bool, error)
 }
+
+//func (r *PostgreSQLRepository) SaveUser(user *models.User) error {
+//	_, err := r.db.Exec("INSERT INTO users (username, HashPassword) VALUES ($1, $2)", user.Username, user.HashPassword)
+//	return err
+//}
+
+//func (r *PostgreSQLRepository) GetUserByID(id int) (*models.User, error) {
+//	var user models.User
+//	err := r.db.QueryRow("SELECT id, username, HashPassword FROM users WHERE id = $1", id).Scan(&user.ID, &user.Username, &user.HashPassword)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &user, nil
+//}
