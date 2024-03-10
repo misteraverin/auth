@@ -1,0 +1,33 @@
+###
+GET http://localhost:8000/ping
+
+###
+# curl -X POST
+#  http://localhost:8080/login
+#  -u "login:password"
+POST http://127.0.0.1:8000/login
+Authorization: Basic login password
+
+###
+# curl -X GET
+#  http://localhost:8080/login
+#  -u "login:password"
+GET http://127.0.0.1:8000/login
+Authorization: Basic login password
+
+###
+# curl -X POST
+#  http://localhost:8080/verify
+#  -H "Authorization: Bearer <access_token>"
+#  -d "{}"
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImxvZ2luIiwiSXNzdWVkQXQiOiIyMDI0LTAyLTA4VDIxOjU0OjMwLjM1NzMxMDYrMDM6MDAiLCJFeHBpcmVzQXQiOiIyMDI0LTAyLTA4VDIyOjU0OjMwLjM1NzMxMDYrMDM6MDAifQ.X0frdv_96KvBlnNsQszduuaysYzLIlJwsITAY4apNr4
+
+POST http://127.0.0.1:8000/verify
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpbiI6ImxvZ2luIiwiSXNzdWVkQXQiOiIyMDI0LTAyLTExVDE4OjU5OjIyLjExMDA0NSswMzowMCIsIkV4cGlyZXNBdCI6IjIwMjQtMDItMTFUMTk6NTk6MjIuMTEwMDQ1KzAzOjAwIn0.MBMazkvvELdU0ZvBXNeIvNPvc4BZ7GtkRSAK-0-cXSg
+Content-Type: application/x-www-form-urlencoded
+
+{}
+
+###
+
+
